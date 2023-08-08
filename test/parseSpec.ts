@@ -105,9 +105,9 @@ describe("parse.js", () => {
     const testValues = Object.keys(data.values).map((key) => key);
 
     it("should parse all values correctly", () => {
-      const result = parseManufacturerData(data.buffer) as Record<string, any>;
+      const result = parseManufacturerData(data.buffer) as Record<string, number>;
       testValues.forEach((key) => {
-        expect(result[key]).toBe((data.values as Record<string, any>)[key]);
+        expect(result[key]).toBe((data.values as Record<string, number>)[key]);
       });
     });
   });

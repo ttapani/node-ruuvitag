@@ -35,7 +35,7 @@ export const parseUrl = (url: string) => {
 };
 
 export const parseManufacturerData = (dataBuffer: Buffer) => {
-  let dataFormat = dataBuffer[2];
+  const dataFormat = dataBuffer[2];
   switch (dataFormat) {
     case 3:
       return format_3(dataBuffer);

@@ -11,8 +11,7 @@ export class Adapter extends EventEmitter {
       this.emit('discover', peripheral);
     });
 
-    // TODO: Fix any
-    noble.on('warning', (warning: any) => {
+    noble.on('warning', (warning: string) => {
       this.emit('warning', warning);
     });
 

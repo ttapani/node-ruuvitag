@@ -1,10 +1,11 @@
 import { EventEmitter } from "events";
 
-const generateRandomUrl = () => {
-  const dataFormat = 4;
-  const randomValues = [1, 2, 3, 4, 5].map((item) => Math.floor(Math.random() * 256));
-  return "https://ruu.vi/#" + Buffer.from([dataFormat].concat(randomValues)).toString("base64");
-};
+// FIXME: Unused?
+// const generateRandomUrl = () => {
+//   const dataFormat = 4;
+//   const randomValues = [1, 2, 3, 4, 5].map((item) => Math.floor(Math.random() * 256));
+//   return "https://ruu.vi/#" + Buffer.from([dataFormat].concat(randomValues)).toString("base64");
+// };
 
 const manufacturerData = Buffer.from("990403501854c2c60042ffe503ef0b8300000000", "hex");
 

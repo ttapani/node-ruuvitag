@@ -46,4 +46,4 @@ export function parseEddystoneBeacon(serviceDataBuffer: Buffer) {
   }
 
   return url;
-};
+}

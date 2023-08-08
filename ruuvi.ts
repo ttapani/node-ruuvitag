@@ -10,8 +10,7 @@ export class RuuviTag extends EventEmitter {
   addressType: string;
   connectable: boolean;
 
-  // TODO: Remove any
-  constructor(data: any) {
+  constructor(data: { id: string, address: string, addressType: string, connectable: boolean }) {
     super();
     this.id = data.id;
     this.address = data.address;

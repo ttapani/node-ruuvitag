@@ -53,7 +53,7 @@ describe("module ruuvi", () => {
       mockAdapter.disableTagFinding();
       ruuvi
         .findTags()
-        .then((data) => done.fail("Should have returned an error"))
+        .then(() => done.fail("Should have returned an error"))
         .catch((err) => {
           expect(err.message).toBe("No beacons found");
           done();
@@ -87,7 +87,7 @@ describe("module ruuvi", () => {
   });
 
   describe("class RuuviTag", () => {
-    let tags: (RuuviTag & { hasEmitted?: boolean, receivedData?: Record<string, any> })[];
+    let tags: (RuuviTag & { hasEmitted?: boolean, receivedData?: Record<string, number> })[];
 
     beforeEach((done) => {
       ruuvi
@@ -109,7 +109,7 @@ describe("module ruuvi", () => {
       });
 
       it('should emit "updated" when ruuvitag signal is received', (done) => {
-        tags.forEach((tag) => tag.on("updated", (data) => (tag.hasEmitted = true)));
+        tags.forEach((tag) => tag.on("updated", () => (tag.hasEmitted = true)));
         setTimeout(() => {
           expect(tags.filter((tag) => tag.hasEmitted).length).toBe(2);
           done();
@@ -136,8 +136,8 @@ describe("module ruuvi", () => {
             };
           })();
 
-          expectedDataKeys.tag_0.forEach((key) => expect(key in (tags[0] as any).receivedData).toBeTruthy());
-          expectedDataKeys.tag_1.forEach((key) => expect(key in (tags[1] as any).receivedData).toBeTruthy());
+          expectedDataKeys.tag_0.forEach((key) => expect(key in (tags[0] as { receivedData: Record<string, number> }).receivedData).toBeTruthy());
+          expectedDataKeys.tag_1.forEach((key) => expect(key in (tags[1] as { receivedData: Record<string, number> }).receivedData).toBeTruthy());
         });
       });
     });
