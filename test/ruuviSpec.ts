@@ -1,38 +1,29 @@
-import mockery from "mockery";
-import sinon from "sinon";
-import mocks from "./mocks";
-const nobleMock = mocks.nobleMock;
+import { NobleMock } from "./mocks";
 import EventEmitter from "events";
+import { Ruuvi, RuuviTag } from "../ruuvi";
+import { Adapter } from "../adapter";
 
-const catchFail = (done) => {
-  return (err) => done.fail(err);
+const catchFail = (done: DoneFn) => {
+  return (err: string | Error | undefined) => done.fail(err);
 };
 
 describe("module ruuvi", () => {
   const findTagsScanTime = 5000;
   const numberOfRuuviTags = 2;
 
-  let ruuvi;
+  let ruuvi: Ruuvi;
+  let mockAdapter: NobleMock;
 
   beforeEach(() => {
-    mockery.enable();
-    mockery.registerMock("@abandonware/noble", nobleMock.mock);
-    mockery.registerMock("noble", nobleMock.mock);
-    mockery.registerAllowable("../adapter");
-    mockery.registerAllowable("../ruuvi");
-    mockery.registerAllowable("./lib/parse");
-    mockery.registerAllowable("./lib/eddystone");
-    mockery.registerAllowable("events");
-    nobleMock.mock.enableTagFinding();
-    const adapter = require("../adapter").Adapter;
-    const Ruuvi = require("../ruuvi").Ruuvi;
-    ruuvi = new Ruuvi(new adapter());
+    mockAdapter = new NobleMock();
+    mockAdapter.enableTagFinding();
+
+    ruuvi = new Ruuvi(mockAdapter as unknown as Adapter);
     jasmine.clock().install();
-    nobleMock.mock.startScanning();
+    mockAdapter.startScanning();
   });
 
   it("should be eventEmitter", () => {
-    const EventEmitter = require("events").EventEmitter;
     expect(ruuvi instanceof EventEmitter).toBeTruthy();
   });
 
@@ -59,7 +50,7 @@ describe("module ruuvi", () => {
     });
 
     it("should return a promise which is rejected if no tags were found", (done) => {
-      nobleMock.mock.disableTagFinding();
+      mockAdapter.disableTagFinding();
       ruuvi
         .findTags()
         .then((data) => done.fail("Should have returned an error"))
@@ -96,7 +87,7 @@ describe("module ruuvi", () => {
   });
 
   describe("class RuuviTag", () => {
-    let tags;
+    let tags: (RuuviTag & { hasEmitted?: boolean, receivedData?: Record<string, any> })[];
 
     beforeEach((done) => {
       ruuvi
@@ -122,13 +113,13 @@ describe("module ruuvi", () => {
         setTimeout(() => {
           expect(tags.filter((tag) => tag.hasEmitted).length).toBe(2);
           done();
-        }, nobleMock.mock.advertiseInterval);
-        jasmine.clock().tick(nobleMock.mock.advertiseInterval);
+        }, mockAdapter.advertiseInterval);
+        jasmine.clock().tick(mockAdapter.advertiseInterval);
       });
 
       describe("emitted data", () => {
         beforeEach((done) => {
-          const waitTime = nobleMock.mock.advertiseInterval;
+          const waitTime = mockAdapter.advertiseInterval;
           tags.forEach((tag) => tag.on("updated", (data) => (tag.receivedData = data)));
           setTimeout(() => {
             done();
@@ -145,8 +136,8 @@ describe("module ruuvi", () => {
             };
           })();
 
-          expectedDataKeys.tag_0.forEach((key) => expect(key in tags[0].receivedData).toBeTruthy());
-          expectedDataKeys.tag_1.forEach((key) => expect(key in tags[1].receivedData).toBeTruthy());
+          expectedDataKeys.tag_0.forEach((key) => expect(key in (tags[0] as any).receivedData).toBeTruthy());
+          expectedDataKeys.tag_1.forEach((key) => expect(key in (tags[1] as any).receivedData).toBeTruthy());
         });
       });
     });
@@ -154,7 +145,5 @@ describe("module ruuvi", () => {
 
   afterEach(function () {
     jasmine.clock().uninstall();
-    mockery.deregisterAll();
-    mockery.disable();
   });
 });

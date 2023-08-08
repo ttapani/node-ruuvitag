@@ -33,7 +33,11 @@ const ruuviTags = [
   },
 ];
 
-class NobleMock extends EventEmitter {
+export class NobleMock extends EventEmitter {
+  public readonly advertiseInterval;
+  private state;
+  private tagsAvailable;
+
   constructor() {
     super();
     this.state = "unknown";
@@ -80,9 +84,3 @@ class NobleMock extends EventEmitter {
     this.tagsAvailable = true;
   }
 }
-
-const obj = (module.exports = {
-  nobleMock: {
-    mock: new NobleMock(),
-  },
-});

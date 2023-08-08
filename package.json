@@ -8,7 +8,7 @@
   "description": "Read data from RuuviTag weather station",
   "main": "index.js",
   "scripts": {
-    "test": "ts-node node_modules/jasmine/bin/jasmine test/*Spec.js",
+    "test": "ts-node node_modules/jasmine/bin/jasmine test/*Spec.ts",
     "lint": "eslint '**/*.js'",
     "prettify": "prettier --write '**/*.js'",
     "build": "tsc"
@@ -16,11 +16,11 @@
   "author": "",
   "license": "BSD-3",
   "devDependencies": {
+    "@types/jasmine": "^4.3.5",
     "@types/noble": "^0.0.41",
     "@types/node": "^18.17.3",
     "eslint": "^8.27.0",
     "jasmine": "^4.5.0",
-    "mockery": "^2.1.0",
     "prettier": "^2.7.1",
     "sinon": "^14.0.2",
     "ts-node": "^10.9.1",

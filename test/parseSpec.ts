@@ -1,5 +1,21 @@
 import { parseManufacturerData, parseUrl } from "../lib/parse";
 
+type OkResult = {
+  dataFormat: number;
+  humidity: number;
+  temperature: number;
+  pressure: number;
+  accelerationX?: number;
+  accelerationY?: number;
+  accelerationZ?: number;
+  battery?: number;
+  eddystoneId?: string;
+  movementCounter?: number;
+  measurementSequenceNumber?: number;
+  txPower?: number;
+  mac?: string;
+};
+
 const createManufacturerData = function () {
   const values = {
     humidity: 58.5,
@@ -68,14 +84,19 @@ describe("parse.js", () => {
 
   describe("parsing data format 2", () => {
     const result = parseUrl(testUrlDataFormat2);
+
+    it("shouldn't return error", () => {
+      expect(result instanceof Error).toBeFalsy();
+    });
+
     it("should parse humidity value", () => {
-      expect(result.humidity).toBe(76);
+      expect((result as OkResult).humidity).toBe(76);
     });
     it("should parse temperature value", () => {
-      expect(result.temperature).toBe(21);
+      expect((result as OkResult).temperature).toBe(21);
     });
     it("should parse pressure value", () => {
-      expect(result.pressure).toBe(992);
+      expect((result as OkResult).pressure).toBe(992);
     });
   });
 
@@ -84,9 +105,9 @@ describe("parse.js", () => {
     const testValues = Object.keys(data.values).map((key) => key);
 
     it("should parse all values correctly", () => {
-      const result = parseManufacturerData(data.buffer);
+      const result = parseManufacturerData(data.buffer) as Record<string, any>;
       testValues.forEach((key) => {
-        expect(result[key]).toBe(data.values[key]);
+        expect(result[key]).toBe((data.values as Record<string, any>)[key]);
       });
     });
   });
@@ -99,16 +120,16 @@ describe("parse.js", () => {
     });
 
     it("should parse humidity value", () => {
-      expect(result.humidity).toBe(76);
+      expect((result as OkResult).humidity).toBe(76);
     });
     it("should parse temperature value", () => {
-      expect(result.temperature).toBe(21);
+      expect((result as OkResult).temperature).toBe(21);
     });
     it("should parse pressure value", () => {
-      expect(result.pressure).toBe(992);
+      expect((result as OkResult).pressure).toBe(992);
     });
     it("should parse eddystoneId", () => {
-      expect(result.eddystoneId).toBeTruthy();
+      expect((result as OkResult).eddystoneId).toBeTruthy();
     });
   });
 
@@ -120,47 +141,47 @@ describe("parse.js", () => {
     });
 
     it("should parse temperature value", () => {
-      expect(result.temperature).toBe(24.3);
+      expect((result as OkResult).temperature).toBe(24.3);
     });
 
     it("should parse pressure value", () => {
-      expect(result.pressure).toBe(100044);
+      expect((result as OkResult).pressure).toBe(100044);
     });
 
     it("should parse humidity value", () => {
-      expect(result.humidity).toBe(53.49);
+      expect((result as OkResult).humidity).toBe(53.49);
     });
 
     it("should parse accelerationX", () => {
-      expect(result.accelerationX).toBe(4);
+      expect((result as OkResult).accelerationX).toBe(4);
     });
 
     it("should parse accelerationY", () => {
-      expect(result.accelerationY).toBe(-4);
+      expect((result as OkResult).accelerationY).toBe(-4);
     });
 
     it("should parse accelerationZ", () => {
-      expect(result.accelerationZ).toBe(1036);
+      expect((result as OkResult).accelerationZ).toBe(1036);
     });
 
     it("should parse txPower", () => {
-      expect(result.txPower).toBe(4);
+      expect((result as OkResult).txPower).toBe(4);
     });
 
     it("should parse battery", () => {
-      expect(result.battery).toBe(2977);
+      expect((result as OkResult).battery).toBe(2977);
     });
 
     it("should parse movementCounter", () => {
-      expect(result.movementCounter).toBe(66);
+      expect((result as OkResult).movementCounter).toBe(66);
     });
 
     it("should parse measurementSequenceNumber", () => {
-      expect(result.measurementSequenceNumber).toBe(205);
+      expect((result as OkResult).measurementSequenceNumber).toBe(205);
     });
 
     it("should parse MAC address", () => {
-      expect(result.mac).toBe("CB:B8:33:4C:88:01");
+      expect((result as OkResult).mac).toBe("CB:B8:33:4C:88:01");
     });
   });
 });

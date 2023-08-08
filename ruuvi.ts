@@ -4,7 +4,7 @@ import EventEmitter from 'events';
 import { parseManufacturerData, parseUrl } from './lib/parse';
 import { parseEddystoneBeacon } from './lib/eddystone';
 
-class RuuviTag extends EventEmitter {
+export class RuuviTag extends EventEmitter {
   id: string;
   address: string;
   addressType: string;
@@ -119,7 +119,7 @@ export class Ruuvi extends EventEmitter {
     });
   }
 
-  findTags() {
+  async findTags(): Promise<RuuviTag[]> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         if (this._foundTags.length) {
