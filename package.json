@@ -8,6 +8,7 @@
   "description": "Read data from RuuviTag weather station",
   "main": "index.js",
   "scripts": {
+    "prepare": "npm run build",
     "test": "ts-node node_modules/jasmine/bin/jasmine test/*Spec.ts",
     "lint": "eslint '**/*.js'",
     "prettify": "prettier --write '**/*.js'",
