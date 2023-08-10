@@ -18,8 +18,8 @@
     "tsconfig.*.json"
   ],
   "exports": {
-    "import": "./dist/esm/main.js",
-    "require": "./dist/cjs/main.js"
+    "import": "./dist/esm/index.js",
+    "require": "./dist/cjs/index.js"
   },
   "scripts": {
     "prepare": "npm run build",
