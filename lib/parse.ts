@@ -1,4 +1,4 @@
-import { formats_2_and_4, format_3, format_5 } from "../dataformats/index";
+import { formats_2_and_4, format_3, format_5 } from "../dataformats/index.js";
 
 function stripUrl(url: string) {
   const match = url.match(/#(.+)$/);

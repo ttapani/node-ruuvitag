@@ -1,8 +1,8 @@
-import { Adapter } from "./adapter";
+import { Adapter } from "./adapter.js";
 
 import EventEmitter from 'events';
-import { parseManufacturerData, parseUrl } from './lib/parse';
-import { parseEddystoneBeacon } from './lib/eddystone';
+import { parseManufacturerData, parseUrl } from './lib/parse.js';
+import { parseEddystoneBeacon } from './lib/eddystone.js';
 
 export class RuuviTag extends EventEmitter {
   id: string;

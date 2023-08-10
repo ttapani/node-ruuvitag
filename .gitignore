@@ -1,5 +1,9 @@
 node_modules
 package-lock.json
 *.js
+*.js.map
 *.tgz
 *.d.ts
+*.tsbuildinfo
+.Cache
+types/

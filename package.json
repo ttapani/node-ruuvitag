@@ -6,7 +6,12 @@
   },
   "repository": "https://github.com/pakastin/node-ruuvitag",
   "description": "Read data from RuuviTag weather station",
-  "main": "index.js",
+  "type": "module",
+  "types": "types",
+  "exports": {
+    "import": "./dist/esm/main.mjs",
+    "require": "./dist/cjs/main.cjs"
+  },
   "scripts": {
     "prepare": "npm run build",
     "test": "ts-node node_modules/jasmine/bin/jasmine test/*Spec.ts",
