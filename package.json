@@ -13,7 +13,9 @@
     "./dist/**/*.js.map",
     "./types",
     "./*.ts",
-    "./**/*.ts"
+    "./**/*.ts",
+    "tsconfig.json",
+    "tsconfig.*.json"
   ],
   "exports": {
     "import": "./dist/esm/main.mjs",
@@ -24,7 +26,7 @@
     "test": "ts-node node_modules/jasmine/bin/jasmine test/*Spec.ts",
     "lint": "eslint '**/*.js'",
     "prettify": "prettier --write '**/*.js'",
-    "build": "tsc"
+    "build": "tsc --build"
   },
   "author": "",
   "license": "BSD-3",
