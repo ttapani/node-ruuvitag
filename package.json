@@ -12,7 +12,8 @@
     "./dist/**/*.js",
     "./dist/**/*.js.map",
     "./types",
-    "*.ts"
+    "./*.ts",
+    "./**/*.ts"
   ],
   "exports": {
     "import": "./dist/esm/main.mjs",
