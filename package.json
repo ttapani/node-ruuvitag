@@ -8,6 +8,11 @@
   "description": "Read data from RuuviTag weather station",
   "type": "module",
   "types": "types",
+  "files": [
+    "./dist/**/*.js",
+    "./dist/**/*.js.map",
+    "./types"
+  ],
   "exports": {
     "import": "./dist/esm/main.mjs",
     "require": "./dist/cjs/main.cjs"
