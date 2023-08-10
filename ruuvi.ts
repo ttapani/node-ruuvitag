@@ -1,9 +1,16 @@
-const EventEmitter = require('events').EventEmitter;
-const parser = require('./lib/parse');
-const parseEddystoneBeacon = require('./lib/eddystone');
+import { Adapter } from "./adapter.js";
 
-class RuuviTag extends EventEmitter {
-  constructor (data) {
+import EventEmitter from 'events';
+import { parseManufacturerData, parseUrl } from './lib/parse.js';
+import { parseEddystoneBeacon } from './lib/eddystone.js';
+
+export class RuuviTag extends EventEmitter {
+  id: string;
+  address: string;
+  addressType: string;
+  connectable: boolean;
+
+  constructor(data: { id: string, address: string, addressType: string, connectable: boolean }) {
     super();
     this.id = data.id;
     this.address = data.address;
@@ -12,8 +19,14 @@ class RuuviTag extends EventEmitter {
   }
 }
 
-class Ruuvi extends EventEmitter {
-  constructor (adapter) {
+export class Ruuvi extends EventEmitter {
+  _adapter: Adapter;
+  _foundTags: RuuviTag[];
+  _tagLookup: Record<string, RuuviTag>;
+  scanning: boolean;
+  listenerAttached: boolean;
+
+  constructor(adapter: Adapter) {
     super();
     this._adapter = adapter;
     this._foundTags = []; // this array will contain registered RuuviTags
@@ -21,16 +34,16 @@ class Ruuvi extends EventEmitter {
     this.scanning = false;
     this.listenerAttached = false;
 
-    const registerTag = tag => {
+    const registerTag = (tag: RuuviTag) => {
       this._foundTags.push(tag);
       this._tagLookup[tag.id] = tag;
     };
 
-    this._adapter.on('warning', warning => {
+    this._adapter.on('warning', (warning) => {
       console.error(new Error(warning));
     });
 
-    this._adapter.on('discover', peripheral => {
+    this._adapter.on('discover', (peripheral) => {
       let newRuuviTag;
 
       // Scan for new RuuviTags, add them to the array of found tags
@@ -79,7 +92,7 @@ class Ruuvi extends EventEmitter {
             'updated',
             Object.assign(
               { dataFormat: dataFormat, rssi: peripheral.rssi },
-              parser.parseManufacturerData(peripheral.advertisement.manufacturerData)
+              parseManufacturerData(peripheral.advertisement.manufacturerData)
             )
           );
         }
@@ -89,7 +102,7 @@ class Ruuvi extends EventEmitter {
         const serviceDataArray = peripheral.advertisement.serviceData;
         const serviceData = serviceDataArray && serviceDataArray.length ? serviceDataArray[0] : undefined;
         const url = serviceData ? parseEddystoneBeacon(serviceData.data) : undefined;
-        const parsed = url ? parser.parseUrl(url) : undefined;
+        const parsed = url ? parseUrl(url) : undefined;
         if (parsed && !(parsed instanceof Error)) {
           ruuviTag.emit('updated', {
             url: url,
@@ -105,7 +118,7 @@ class Ruuvi extends EventEmitter {
     });
   }
 
-  findTags () {
+  async findTags(): Promise<RuuviTag[]> {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         if (this._foundTags.length) {
@@ -116,17 +129,15 @@ class Ruuvi extends EventEmitter {
     });
   }
 
-  start () {
+  start() {
     if (!this.scanning) {
       this.scanning = true;
     }
   }
 
-  stop () {
+  stop() {
     if (this.scanning) {
       this.scanning = false;
     }
   }
 }
-
-module.exports = Ruuvi;

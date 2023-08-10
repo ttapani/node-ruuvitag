@@ -1,10 +1,11 @@
-const EventEmitter = require("events").EventEmitter;
+import { EventEmitter } from "events";
 
-const generateRandomUrl = () => {
-  const dataFormat = 4;
-  const randomValues = [1, 2, 3, 4, 5].map(item => Math.floor(Math.random() * 256));
-  return "https://ruu.vi/#" + Buffer.from([dataFormat].concat(randomValues)).toString("base64");
-};
+// FIXME: Unused?
+// const generateRandomUrl = () => {
+//   const dataFormat = 4;
+//   const randomValues = [1, 2, 3, 4, 5].map((item) => Math.floor(Math.random() * 256));
+//   return "https://ruu.vi/#" + Buffer.from([dataFormat].concat(randomValues)).toString("base64");
+// };
 
 const manufacturerData = Buffer.from("990403501854c2c60042ffe503ef0b8300000000", "hex");
 
@@ -33,7 +34,11 @@ const ruuviTags = [
   },
 ];
 
-class NobleMock extends EventEmitter {
+export class NobleMock extends EventEmitter {
+  public readonly advertiseInterval;
+  private state;
+  private tagsAvailable;
+
   constructor() {
     super();
     this.state = "unknown";
@@ -46,7 +51,7 @@ class NobleMock extends EventEmitter {
       if (!this.tagsAvailable) {
         return;
       }
-      ruuviTags.forEach(tag => {
+      ruuviTags.forEach((tag) => {
         if (tag.dataFormat === 3) {
           this.emit("discover", {
             id: tag.id,
@@ -60,26 +65,8 @@ class NobleMock extends EventEmitter {
                 {
                   uuid: "feaa",
                   data: Buffer.from([
-                    0x10,
-                    0xf9,
-                    0x03,
-                    0x72,
-                    0x75,
-                    0x75,
-                    0x2e,
-                    0x76,
-                    0x69,
-                    0x2f,
-                    0x23,
-                    0x42,
-                    0x45,
-                    0x51,
-                    0x5a,
-                    0x41,
-                    0x4d,
-                    0x4c,
-                    0x73,
-                    0x4f,
+                    0x10, 0xf9, 0x03, 0x72, 0x75, 0x75, 0x2e, 0x76, 0x69, 0x2f, 0x23, 0x42, 0x45, 0x51, 0x5a, 0x41,
+                    0x4d, 0x4c, 0x73, 0x4f,
                   ]),
                 },
               ],
@@ -98,9 +85,3 @@ class NobleMock extends EventEmitter {
     this.tagsAvailable = true;
   }
 }
-
-const obj = (module.exports = {
-  nobleMock: {
-    mock: new NobleMock(),
-  },
-});

@@ -2,30 +2,27 @@
 // which is licenced under BSD-3
 // Credits to GitHub user ojousima
 
-const parseRawRuuvi = function(manufacturerDataString) {
-  let humidityStart = 6;
-  let humidityEnd = 8;
-  let temperatureStart = 8;
-  let temperatureEnd = 12;
-  let pressureStart = 12;
-  let pressureEnd = 16;
-  let accelerationXStart = 16;
-  let accelerationXEnd = 20;
-  let accelerationYStart = 20;
-  let accelerationYEnd = 24;
-  let accelerationZStart = 24;
-  let accelerationZEnd = 28;
-  let batteryStart = 28;
-  let batteryEnd = 32;
+// type RuuviData = { humidity: number, temperature: number, pressure: number, accelerationX: number, accelerationY: number, accelerationZ: number, battery: number }
 
-  let robject = {};
+const parseRawRuuvi = function (manufacturerDataString: string) {
+  const humidityStart = 6;
+  const humidityEnd = 8;
+  const temperatureStart = 8;
+  const temperatureEnd = 12;
+  const pressureStart = 12;
+  const pressureEnd = 16;
+  const accelerationXStart = 16;
+  const accelerationXEnd = 20;
+  const accelerationYStart = 20;
+  const accelerationYEnd = 24;
+  const accelerationZStart = 24;
+  const accelerationZEnd = 28;
+  const batteryStart = 28;
+  const batteryEnd = 32;
 
-  let humidity = manufacturerDataString.substring(humidityStart, humidityEnd);
-  humidity = parseInt(humidity, 16);
-  humidity /= 2; //scale
-  robject.humidity = humidity;
+  const humidity = parseInt(manufacturerDataString.substring(humidityStart, humidityEnd), 16) / 2;
 
-  let temperatureString = manufacturerDataString.substring(temperatureStart, temperatureEnd);
+  const temperatureString = manufacturerDataString.substring(temperatureStart, temperatureEnd);
   let temperature = parseInt(temperatureString.substring(0, 2), 16); //Full degrees
   temperature += parseInt(temperatureString.substring(2, 4), 16) / 100; //Decimals
   if (temperature > 128) {
@@ -33,11 +30,10 @@ const parseRawRuuvi = function(manufacturerDataString) {
     temperature = temperature - 128;
     temperature = 0 - temperature;
   }
-  robject.temperature = +temperature.toFixed(2); // Round to 2 decimals, format as a number
+  temperature = +temperature.toFixed(2); // Round to 2 decimals, format as a number
 
   let pressure = parseInt(manufacturerDataString.substring(pressureStart, pressureEnd), 16); // uint16_t pascals
   pressure += 50000; //Ruuvi format
-  robject.pressure = pressure;
 
   let accelerationX = parseInt(manufacturerDataString.substring(accelerationXStart, accelerationXEnd), 16); // milli-g
   if (accelerationX > 32767) {
@@ -54,16 +50,10 @@ const parseRawRuuvi = function(manufacturerDataString) {
     accelerationZ -= 65536;
   } //two's complement
 
-  robject.accelerationX = accelerationX;
-  robject.accelerationY = accelerationY;
-  robject.accelerationZ = accelerationZ;
+  const battery = parseInt(manufacturerDataString.substring(batteryStart, batteryEnd), 16); // milli-g
 
-  let battery = parseInt(manufacturerDataString.substring(batteryStart, batteryEnd), 16); // milli-g
-  robject.battery = battery;
-
-  return robject;
+  return { humidity, temperature, pressure, accelerationX, accelerationY, accelerationZ, battery };
 };
 
-module.exports = {
-  parse: buffer => parseRawRuuvi(buffer.toString("hex")),
-};
+
+export const parse = (buffer: Buffer) => parseRawRuuvi(buffer.toString("hex"))

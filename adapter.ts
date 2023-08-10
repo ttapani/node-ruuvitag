@@ -1,15 +1,17 @@
-const noble = require('@abandonware/noble');
-const EventEmitter = require('events').EventEmitter;
+import noble from '@abandonware/noble';
+import { EventEmitter } from "events";
 
-class Adapter extends EventEmitter {
-  constructor () {
+export class Adapter extends EventEmitter {
+  private _scanning = false;
+
+  constructor() {
     super();
 
     noble.on('discover', (peripheral) => {
       this.emit('discover', peripheral);
     });
 
-    noble.on('warning', (warning) => {
+    noble.on('warning', (warning: string) => {
       this.emit('warning', warning);
     });
 
@@ -28,7 +30,7 @@ class Adapter extends EventEmitter {
     }
   }
 
-  start () {
+  start() {
     if (this._scanning) {
       return;
     }
@@ -36,7 +38,7 @@ class Adapter extends EventEmitter {
     noble.startScanning([], true);
   }
 
-  stop () {
+  stop() {
     if (!this._scanning) {
       return;
     }
@@ -44,5 +46,3 @@ class Adapter extends EventEmitter {
     noble.stopScanning();
   }
 }
-
-module.exports = new Adapter();

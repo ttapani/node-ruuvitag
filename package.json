@@ -6,20 +6,42 @@
   },
   "repository": "https://github.com/pakastin/node-ruuvitag",
   "description": "Read data from RuuviTag weather station",
-  "main": "index.js",
+  "type": "module",
+  "types": "types",
+  "files": [
+    "./dist/**/*.js",
+    "./dist/**/*.js.map",
+    "./types",
+    "./*.ts",
+    "./**/*.ts",
+    "tsconfig.json",
+    "tsconfig.*.json"
+  ],
+  "exports": {
+    "import": "./dist/esm/index.js",
+    "require": "./dist/cjs/index.js"
+  },
   "scripts": {
-    "test": "jasmine test/*Spec.js",
+    "prepare": "npm run build",
+    "test": "ts-node node_modules/jasmine/bin/jasmine test/*Spec.ts",
     "lint": "eslint '**/*.js'",
-    "prettify": "prettier --write '**/*.js'"
+    "prettify": "prettier --write '**/*.js'",
+    "build": "tsc --build"
   },
   "author": "",
   "license": "BSD-3",
   "devDependencies": {
-    "eslint": "^8.27.0",
+    "@types/jasmine": "^4.3.5",
+    "@types/noble": "^0.0.41",
+    "@types/node": "^18.17.3",
+    "@typescript-eslint/eslint-plugin": "^6.3.0",
+    "@typescript-eslint/parser": "^6.3.0",
+    "eslint": "^8.46.0",
     "jasmine": "^4.5.0",
-    "mockery": "^2.1.0",
     "prettier": "^2.7.1",
-    "sinon": "^14.0.2"
+    "sinon": "^14.0.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
   },
   "dependencies": {
     "@abandonware/noble": "^1.9.2-15"
